@@ -3,8 +3,16 @@ using UnityEngine;
 
 namespace Hekatombe.Base
 {
-    public static class Vector3Extensions
-    {
+    public static class Vector3Extension
+	{
+		/********
+		 * Create three equal Axis
+		 */
+		public static Vector3 Create(float n)
+		{
+			return new Vector3(n, n, n);
+		}
+			
 		/********
 		 * Create one Axis
 		 */

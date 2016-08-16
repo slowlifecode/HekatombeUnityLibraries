@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Hekatombe.Base
 {
-    public static class Vector2Extensions
+    public static class Vector2Extension
     {
 		/********
 		 * Create one Axis
