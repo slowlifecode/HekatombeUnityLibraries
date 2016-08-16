@@ -8,6 +8,19 @@ namespace Hekatombe.Base
     public static class GameObjectExtension
 	{
 		/// <summary>
+		///     Resources.Load with Log Error
+		/// </summary>
+		public static T ResourcesLoad<T>(string path) where T : UnityEngine.Object
+		{
+			T obj = Resources.Load<T>(path);
+			if (obj == null)
+			{
+				Debug.LogError("Resource not found at path: " + path);
+			}
+			return obj;
+		}
+
+		/// <summary>
 		///     Dulpicate a GameObject that is already on the scene
 		/// 	Return the selected Component associated to the duplicated GameObject
 		/// </summary>
