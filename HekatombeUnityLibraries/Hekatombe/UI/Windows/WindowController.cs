@@ -65,8 +65,10 @@ namespace Hekatombe.UI.Windows
 			if (_canvasGroup == null) {
 				_canvasGroup = GetComponent<CanvasGroup> ().BreakIfNull ("Window Named: " + name + " don't has a CanvasGroup controller");
 				_rectTransform = (RectTransform)_canvasGroup.transform;
-				//Si té només un fill, assigna'l com a Container, sinó, que sigui ella mateixa
-				if (_rectTransform.childCount == 1) {
+				//If doesn't have a child called Container, select the only child. If not, select itself.
+				if (transform.Find ("Container")) {
+					_container = (RectTransform)transform.Find ("Container");
+				} else if (_rectTransform.childCount == 1) {
 					_container = (RectTransform)_rectTransform.GetChild (0);
 				} else {
 					_container = _rectTransform;

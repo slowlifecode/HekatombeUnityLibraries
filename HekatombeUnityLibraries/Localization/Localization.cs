@@ -29,8 +29,6 @@ namespace Hekatombe.Localization
     }
 
 	public partial class Localization {
-
-        private static int _numLanguages;
         private static ELanguage _forcedLanguage;
 
 		public Dictionary<string, string[]> LocData = new Dictionary<string, string[]>();
@@ -82,7 +80,6 @@ namespace Hekatombe.Localization
 				Instance = new Localization();
                 _defaultLanguage = defaultLanguage;
                 _selectedLanguage = _defaultLanguage;
-                _numLanguages = languages.Length;
 
                 Languages = languages;
 
@@ -93,7 +90,7 @@ namespace Hekatombe.Localization
                     SetLanguage(_forcedLanguage);
 				} else if (IsLanguageSetByUser())
 				{
-					SetLanguage(EnumUtils.ParseEnum<ELanguage>(PlayerPrefs.GetString(kPPKeyLanguage)));
+					SetLanguage(GetLanguageByName(PlayerPrefs.GetString(kPPKeyLanguage)));
 				} else {
 					SetLanguage(_defaultLanguage);
 				}
@@ -114,13 +111,18 @@ namespace Hekatombe.Localization
 		public static void SetLanguageByUser(ELanguage language)
 		{
 			SetLanguage (language);
-			PlayerPrefs.SetString(kPPKeyLanguage, _selectedLanguage.ToString());
+			PlayerPrefs.SetString(kPPKeyLanguage, _selectedLanguage.Name);
 		}
 
 		private static void SetLanguage(ELanguage language)
 		{
-            _selectedLanguage = language;
-            IndexSelectedLanguage = _selectedLanguage.Value;
+			_selectedLanguage = language;
+			IndexSelectedLanguage = _selectedLanguage.Value;
+		}
+
+		public static ELanguage GetLanguage()
+		{
+			return _selectedLanguage;
 		}
 		
 		public static void StaticLoad(string localizationJsonStr)
@@ -153,14 +155,25 @@ namespace Hekatombe.Localization
             
 		public static string GetResult()
 		{
-            return string.Format ("Get {0} Localizations in {1} Languages", Instance.LocData.Count, _numLanguages);
+			return string.Format ("Get {0} Localizations in {1} Languages", Instance.LocData.Count, NumLanguages);
 		}
 
         public static int NumLanguages
         {
             get{
-                return _numLanguages;
+				return Languages.Length;
             }
         }
+
+		public static ELanguage GetLanguageByName(string name)
+		{
+			for (int i = 0; i < NumLanguages; i++) {
+				if (Languages [i].Name == name) {
+					return Languages [i];
+				}
+			}
+			Debug.LogError ("No language found with Name: " + name);
+			return null;
+		}
 	}
 }
