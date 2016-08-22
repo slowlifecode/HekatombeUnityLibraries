@@ -76,7 +76,7 @@ namespace Hekatombe.Base
 		///     Returns a component of type T in the game object. If the component does not exists, it 
 		///     logs an error and pauses execution
 		/// </summary>
-		public static T GetComponentBreakIfNull<T>(this GameObject datGameObject) where T : UnityEngine.Component
+		public static T GetComponentBreakIfNull<T>(this Behaviour datGameObject) where T : UnityEngine.Component
 		{
 			return datGameObject.GetComponent<T>().BreakIfNull("This GameObject requires a component of type " + typeof(T).Name);
 		}
