@@ -108,9 +108,30 @@ namespace Hekatombe.UI.Windows
 	        HideSpec();
 		}
 
+		//Just Hide if it's not already hidden and notify it
+		public bool HideSafe()
+		{
+			if (IsShown) {
+				Hide ();
+				return true;
+			}
+			return false;
+		}
+
+		//Destroy immediately the Window because a change on Scene
+		//This way it is removed from WindowManager
+		public void HideForcedOnLoadScene()
+		{
+			_isShown = false;
+			if (OnCloseCallback != null) 
+			{
+				OnCloseCallback();
+			}
+			HideEnd ();
+		}
+
 		protected virtual void ShowSpec()
 		{
-
 	    }
 	    
         //All HideSpecs that overwrite had to finally call HideEnd() at the end of the FadeOut
