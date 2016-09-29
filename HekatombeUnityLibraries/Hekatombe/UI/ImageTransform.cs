@@ -31,17 +31,27 @@ namespace Hekatombe.Base
 
 		public void Hide()
 		{
+			KillTweenImage ();
 			_image.color = _originalColor.Transparent ();
 		}
 
 		public void Show()
 		{
+			KillTweenImage ();
 			_image.color = _originalColor;
 		}
 
 		public void HideSmooth()
 		{
+			KillTweenImage ();
 			_image.DOFade (0, 0.4f).SetEase(Ease.Linear);
+		}
+
+		public void ShowSmooth()
+		{
+			KillTweenImage ();
+			Hide ();
+			_image.DOFade (1, 0.4f).SetEase(Ease.Linear);
 		}
 
 		public Vector2 Size
@@ -62,6 +72,22 @@ namespace Hekatombe.Base
 			set{
 				_trans.localPosition = value;
 			}
+		}
+
+		public void KillTweens()
+		{
+			KillTweenImage ();
+			KillTweenTransform ();
+		}
+
+		public void KillTweenImage()
+		{
+			_image.DOKill ();
+		}
+
+		public void KillTweenTransform()
+		{
+			_trans.DOKill ();
 		}
 	}
 }
