@@ -32,6 +32,13 @@ namespace Hekatombe.UI.Windows
 			SetAction (action);
 		}
 
+		public void Init(UnityAction action, string strButton)
+		{
+			Init ();
+			SetAction (action);
+			SetText (strButton);
+		}
+
 		public void SetText(string text)
 		{
 			if (LblRef == null) {
