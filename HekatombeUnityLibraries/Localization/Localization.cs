@@ -56,6 +56,11 @@ namespace Hekatombe.Localization
 
 		public static string Get(string key, ELanguage language)
 		{
+			if (key == null) {
+				string strError = string.Format("LocKeyNull-{0}", language);
+				Debug.LogError(strError);
+				return strError;
+			}
 			if (!Exists(key)) {
 				string strError = string.Format("LocMiss-{0}: {1}", language, key);
 				Debug.LogError(strError);
