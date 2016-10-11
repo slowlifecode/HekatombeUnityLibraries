@@ -106,5 +106,19 @@ namespace Hekatombe.Base
 				_image.sprite = value;
 			}
 		}
+
+		public Vector2 Center
+		{
+			get {
+				return _trans.offsetMin+(Size*0.5f);
+			}
+		}
+
+		public RectTransform RectTransform
+		{
+			get{
+				return _trans;
+			}
+		}
 	}
 }
