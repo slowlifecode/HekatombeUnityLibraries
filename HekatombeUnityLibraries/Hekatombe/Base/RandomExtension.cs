@@ -23,5 +23,15 @@ namespace Hekatombe.Base
 		{
 			return new Vector3 (Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
 		}
+
+		public static int RangeButDifferentThan(int min, int max, int different)
+		{
+			int rand = Random.Range (min, max);
+			//If it's the same value, get the next
+			if (rand == different) {
+				rand = (rand + 1) % max;
+			}
+			return rand;
+		}
 	}
 }

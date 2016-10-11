@@ -89,5 +89,22 @@ namespace Hekatombe.Base
 		{
 			_trans.DOKill ();
 		}
+
+		public Image Image
+		{
+			get{
+				return _image;
+			}
+		}
+
+		public Sprite Sprite
+		{
+			get {
+				return _image.sprite;
+			}
+			set {
+				_image.sprite = value;
+			}
+		}
 	}
 }
