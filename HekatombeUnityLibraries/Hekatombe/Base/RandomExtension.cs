@@ -23,5 +23,11 @@ namespace Hekatombe.Base
 		{
 			return new Vector3 (Random.Range(-range, range), Random.Range(-range, range), Random.Range(-range, range));
 		}
+
+		public static Vector3 RandomVector3Proportional(float min, float max)
+		{
+			float rand = Random.Range (min, max);
+			return new Vector3 (rand, rand, rand);
+		}
 	}
 }
