@@ -89,5 +89,13 @@ namespace Hekatombe.Utils
 			}
 			return value;
 		}
+
+		public static bool IsEmpty(this string value)
+		{
+			if (value == null || value == "") {
+				return true;
+			}
+			return false;
+		}
 	}
 }

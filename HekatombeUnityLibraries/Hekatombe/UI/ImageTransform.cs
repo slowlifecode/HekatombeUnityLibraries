@@ -11,6 +11,7 @@ namespace Hekatombe.Base
 		private Image _image;
 		private RectTransform _trans;
 		private Color _originalColor;
+		private CanvasGroup _canvasGroup;
 
 		// Use this for initialization
 		public void Init()
@@ -20,6 +21,8 @@ namespace Hekatombe.Base
 				_trans = GetComponent<RectTransform> ().BreakIfNull ();
 				_originalColor = _image.color;
 				_isInit = true;
+				//Don't BreakIfNull _canvasGroup, because can be unused in many cases
+				_canvasGroup = GetComponent<CanvasGroup> ();
 			}
 		}
 
@@ -88,6 +91,56 @@ namespace Hekatombe.Base
 		public void KillTweenTransform()
 		{
 			_trans.DOKill ();
+		}
+
+		public Image Image
+		{
+			get{
+				return _image;
+			}
+		}
+
+		public Sprite Sprite
+		{
+			get {
+				return _image.sprite;
+			}
+			set {
+				_image.sprite = value;
+			}
+		}
+
+		public Vector2 Center
+		{
+			get {
+				return _trans.offsetMin+(Size*0.5f);
+			}
+		}
+
+		public RectTransform RectTransform
+		{
+			get{
+				return _trans;
+			}
+		}
+
+		public CanvasGroup CanvasGroup
+		{
+			get{
+				return _canvasGroup;
+			}
+		}
+
+		public void ResizeProportionalButKeepHeight()
+		{
+			float perc = Sprite.textureRect.width / Sprite.textureRect.height;
+			Size = Size.CopyVectorButModifyX (Size.y * perc);
+		}
+
+		public void ResizeProportionalButKeepWidth()
+		{
+			float perc = Sprite.textureRect.height / Sprite.textureRect.width;
+			Size = Size.CopyVectorButModifyY (Size.x * perc);
 		}
 	}
 }

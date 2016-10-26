@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Hekatombe.Base
@@ -28,6 +28,16 @@ namespace Hekatombe.Base
 		{
 			float rand = Random.Range (min, max);
 			return new Vector3 (rand, rand, rand);
+		}
+
+		public static int RangeButDifferentThan(int min, int max, int different)
+		{
+			int rand = Random.Range (min, max);
+			//If it's the same value, get the next
+			if (rand == different) {
+				rand = (rand + 1) % max;
+			}
+			return rand;
 		}
 	}
 }
