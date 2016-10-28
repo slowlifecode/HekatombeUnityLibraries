@@ -180,5 +180,12 @@ namespace Hekatombe.Localization
 			Debug.LogError ("No language found with Name: " + name);
 			return null;
 		}
+
+		public static ELanguage SelectedLanguage
+		{
+			get{
+				return _selectedLanguage;
+			}
+		}
 	}
 }
