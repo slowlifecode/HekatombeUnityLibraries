@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.IO;
 using Hekatombe.Base;
+using System.Collections.Generic;
 
 namespace Hekatombe.DataHelpers
 {
@@ -11,6 +12,8 @@ namespace Hekatombe.DataHelpers
 		public bool IsSuccess = false;
 		public string Contents;
 		public string Error = "Not loaded yet";
+
+		private const string kUnauthorized = "unauthorized";
 
 		public LoadDataResult(bool isSuccess, string text)
 		{
@@ -26,6 +29,11 @@ namespace Hekatombe.DataHelpers
 			IsSuccess = isSuccess;
 			Contents = contents;
 			Error = error;
+		}
+
+		public bool IsUnauthorized()
+		{
+			return Contents.ToLower ().Contains (kUnauthorized) || Error.ToLower ().Contains (kUnauthorized);
 		}
 	}
 
@@ -60,6 +68,30 @@ namespace Hekatombe.DataHelpers
 		public IEnumerator RemoteLoading(string path, Action<LoadDataResult> onCallbackEnd)
 		{
 			WWW www = new WWW(path);
+			yield return www;
+			if (www.error == null)
+			{
+				onCallbackEnd (new LoadDataResult(true, www.text));
+			}
+			else
+			{
+				Debug.LogError("Remote Loading Error: " + www.error);
+				onCallbackEnd (new LoadDataResult(false, www.error));
+			}
+		}
+
+		public static void RemoteLoadingJsonHeadersSt(string path, Action<LoadDataResult> onCallbackEnd, string postData)
+		{
+			Instance.StartCoroutine(Instance.RemoteLoadingJsonHeaders (path, onCallbackEnd, postData));
+		}
+
+		public IEnumerator RemoteLoadingJsonHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData)
+		{
+			var encoding = new System.Text.UTF8Encoding();
+			var postHeader = new Dictionary<string, string>();
+			postHeader.Add("Content-Type", "text/json");
+
+			WWW www = new WWW(path, encoding.GetBytes(postData), postHeader);
 			yield return www;
 			if (www.error == null)
 			{
