@@ -25,7 +25,7 @@ namespace Hekatombe.Base
 		//Use without the general bool _loadFromResources
 		public static GameObject Spawn(bool loadFromResources, string path, string name, Vector3 position, Quaternion quat)
 		{
-			if (_loadFromResources) {
+			if (loadFromResources) {
 				return GameObjectExtension.LoadAndInstantiateGameObject (path + name, position, quat);
 			} else {
 				return TrashMan.spawn (name, position, quat);
