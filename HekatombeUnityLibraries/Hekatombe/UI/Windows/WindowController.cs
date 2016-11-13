@@ -83,6 +83,14 @@ namespace Hekatombe.UI.Windows
 			
 		}
 
+		protected virtual void AddListeners()
+		{
+		}
+
+		protected virtual void RemoveListeners()
+		{
+		}
+
 		void Start()
 		{
 			OnStart();
@@ -95,12 +103,14 @@ namespace Hekatombe.UI.Windows
 		public void Show()
 		{
 			_isShown = true;
+			AddListeners ();
 			ShowSpec ();
 		}
 
 		public void Hide()
 		{
 			_isShown = false;
+			RemoveListeners ();
 			if (OnCloseCallback != null) 
 			{
 				OnCloseCallback();
