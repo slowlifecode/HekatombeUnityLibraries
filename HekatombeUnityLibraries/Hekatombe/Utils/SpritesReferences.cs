@@ -39,12 +39,21 @@ namespace Hekatombe.Utils
 
 		public static Sprite GetSpriteByName(string name)
 		{
-			if (!Instance._spritesDictionary.ContainsKey (name)) 
+			if (!ExistsSpriteByName(name)) 
 			{
 				Debug.LogError("Sprite not found: " + name);
 				return null;
 			}
 			return Instance._spritesDictionary[name];
+		}
+
+		public static bool ExistsSpriteByName(string name)
+		{
+			if (Instance._spritesDictionary.ContainsKey (name)) 
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }
