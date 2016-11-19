@@ -8,7 +8,7 @@ namespace Hekatombe.UI
 	public class WidgetController : MonoBehaviour 
 	{
 		private bool _isInit = false;
-	    private CanvasGroup _canvasGroup;
+	    protected CanvasGroup _canvasGroup;
 		protected RectTransform _rectTransform;
 		[HideInInspector]
 		public bool IsShown = false;
