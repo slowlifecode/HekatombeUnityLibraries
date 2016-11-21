@@ -60,6 +60,11 @@ namespace Hekatombe.UI.Windows
 			return window;
 	    }
 
+		public void SetInFront()
+		{
+			transform.SetSiblingIndex (transform.parent.childCount-1);
+		}
+
 		public void FindInternalReferences()
 		{
 			if (_canvasGroup == null) {
