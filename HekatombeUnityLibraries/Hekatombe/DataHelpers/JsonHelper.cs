@@ -32,5 +32,29 @@ namespace Hekatombe.DataHelpers
 		private class Wrapper<T> {
 			public T[] Items;
 		}
+
+		//This could be better done with Serializing, but I have to create to many classes... Boring :P
+		public static string SetJsonKeyValues(params object[] values)
+		{
+			string json = "";
+			int length = values.Length;
+			if (values.Length % 2 != 0) {
+				UnityEngine.Debug.LogError ("SetPostJsonData not correct because it has NOT pair values. The last value will be ignored.");
+				length--;
+			}
+			//Oju que s'afegeixen cada 2 per simplificar!
+			string comma = ", ";
+			for (int i=0; i< length; i+=2)
+			{
+				if (i >= length - 2) {
+					comma = "";
+				}
+				json += string.Format("\"{0}\": \"{1}\"{2}", values[i], values[i+1], comma);
+			}
+			//Add the { }
+			json = "{" + json + "}";
+			//UnityEngine.Debug.Log ("JSON DATA: " + json);
+			return json;
+		}
 	}
 }
