@@ -58,7 +58,16 @@ namespace Hekatombe.DataHelpers
 		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd)
 		{
 			Debug.Log(string.Format("Load File Contents: {0}", path));
-			if (isRemote) {
+			bool isRemoteHelp = isRemote;
+			#if UNITY_EDITOR
+			#elif UNITY_ANDROID
+			//In Android even the Local Files have to be loaded as Remote
+			if (!isRemoteHelp)
+			{
+				isRemoteHelp = true;
+			}
+			#endif
+			if (isRemoteHelp) {
 				Instance.StartCoroutine(Instance.RemoteLoading (path, onCallbackEnd));
 			} else {
 				Instance.LocalLoading (path, onCallbackEnd);
