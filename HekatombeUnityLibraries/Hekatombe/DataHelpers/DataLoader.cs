@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Hekatombe.Base;
 using System.Collections.Generic;
+using AppEducativa.Main;
 
 namespace Hekatombe.DataHelpers
 {
@@ -89,18 +90,14 @@ namespace Hekatombe.DataHelpers
 			}
 		}
 
-		public static void RemoteLoadingJsonHeadersSt(string path, Action<LoadDataResult> onCallbackEnd, string postData)
+		public static void RemoteLoadingHeadersSt(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
-			Instance.StartCoroutine(Instance.RemoteLoadingJsonHeaders (path, onCallbackEnd, postData));
+			Instance.StartCoroutine(Instance.RemoteLoadingHeaders (path, onCallbackEnd, postData, postHeaders));
 		}
 
-		public IEnumerator RemoteLoadingJsonHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData)
+		public IEnumerator RemoteLoadingHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
-			var encoding = new System.Text.UTF8Encoding();
-			var postHeader = new Dictionary<string, string>();
-			postHeader.Add("Content-Type", "text/json");
-
-			WWW www = new WWW(path, encoding.GetBytes(postData), postHeader);
+			WWW www = new WWW(path, System.Text.Encoding.UTF8.GetBytes(postData), postHeaders);
 			yield return www;
 			if (www.error == null)
 			{
