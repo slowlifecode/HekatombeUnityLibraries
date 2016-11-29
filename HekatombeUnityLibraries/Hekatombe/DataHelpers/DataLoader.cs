@@ -14,7 +14,8 @@ namespace Hekatombe.DataHelpers
 		public string Contents;
 		public string Error = "Not loaded yet";
 
-		private const string kUnauthorized = "unauthorized";
+		private const string k401 = "401";
+		private const string k403 = "403";
 
 		public LoadDataResult(bool isSuccess, string text)
 		{
@@ -34,7 +35,7 @@ namespace Hekatombe.DataHelpers
 
 		public bool IsUnauthorized()
 		{
-			return Contents.ToLower ().Contains (kUnauthorized) || Error.ToLower ().Contains (kUnauthorized);
+			return Contents.Contains (k401) || Error.ToLower ().Contains (k401) || Contents.Contains (k403) || Error.ToLower ().Contains (k403);
 		}
 	}
 
