@@ -16,6 +16,7 @@ namespace Hekatombe.DataHelpers
 
 		private const string k401 = "401";
 		private const string k403 = "403";
+		private const string k404 = "404";
 
 		public LoadDataResult(bool isSuccess, string text)
 		{
@@ -35,7 +36,12 @@ namespace Hekatombe.DataHelpers
 
 		public bool IsUnauthorized()
 		{
-			return Contents.Contains (k401) || Error.ToLower ().Contains (k401) || Contents.Contains (k403) || Error.ToLower ().Contains (k403);
+			return Contents.Contains (k401) || Error.Contains (k401) || Contents.Contains (k403) || Error.Contains (k403);
+		}
+
+		public bool IsNotFound()
+		{
+			return Contents.Contains (k404) || Error.Contains (k404);
 		}
 	}
 
@@ -98,7 +104,12 @@ namespace Hekatombe.DataHelpers
 
 		public IEnumerator RemoteLoadingHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
-			WWW www = new WWW(path, System.Text.Encoding.UTF8.GetBytes(postData), postHeaders);
+			byte[] bytes = null;
+			//If a null is send on postdata, it means is a GET method
+			if (postData != null) {
+				bytes = System.Text.Encoding.UTF8.GetBytes (postData);
+			}
+			WWW www = new WWW(path, bytes, postHeaders);
 			yield return www;
 			if (www.error == null)
 			{
