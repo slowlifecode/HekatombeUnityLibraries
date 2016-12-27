@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using Hekatombe.Base;
 using System.Collections.Generic;
-using AppEducativa.Main;
 
 namespace Hekatombe.DataHelpers
 {
