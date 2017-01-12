@@ -62,6 +62,19 @@ namespace Hekatombe.Base
 			return go.GetComponent<T> ().BreakIfNull("This GameObject requires a component of type " + typeof(T).Name);
 		}
 
+		/// <summary>
+		///     To save to do Resources.Load + Instantiate every time
+		/// </summary>
+		public static T LoadAndInstantiateUI<T>(string path, Vector2 localPosition, RectTransform parent) where T : UnityEngine.Component
+		{
+			GameObject go = LoadAndInstantiateGameObject (path, Vector3.zero, Quaternion.identity);
+			RectTransform trans = go.GetComponent<RectTransform>().BreakIfNull();
+			trans.SetParent (parent);
+			trans.localScale = Vector3.one;
+			trans.anchoredPosition = localPosition;
+			return go.GetComponent<T> ().BreakIfNull("This GameObject requires a component of type " + typeof(T).Name);
+		}
+
         /// <summary>
         ///     To save to do Resources.Load + Instantiate every time, specific for GameObjects
 		/// </summary>
