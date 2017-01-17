@@ -55,6 +55,7 @@ namespace Hekatombe.DataHelpers
 			if (dl == null)
 			{
 				GameObject go = new GameObject ();
+				go.name = "DataLoader";
 				Instance = go.AddComponent<DataLoader> ();
 				DontDestroyOnLoad (Instance.gameObject);
 			} else {
