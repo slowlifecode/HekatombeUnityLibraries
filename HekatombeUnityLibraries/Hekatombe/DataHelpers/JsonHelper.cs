@@ -56,5 +56,17 @@ namespace Hekatombe.DataHelpers
 			//UnityEngine.Debug.Log ("JSON DATA: " + json);
 			return json;
 		}
+
+		//check if a json string is empty
+		public static bool IsEmpty(string json)
+		{
+			string jsonClean = json.Trim ().Replace ("\n", "");
+			//Empty means "null", "", "{}"...
+			if (jsonClean == null || jsonClean.Length<=2)
+			{
+				return true;
+			}
+			return false;;
+		}
 	}
 }
