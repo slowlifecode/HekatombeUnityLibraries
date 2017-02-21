@@ -65,7 +65,7 @@ namespace Hekatombe.DataHelpers
 
 		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd)
 		{
-			Debug.Log(string.Format("Load File Contents: {0}", path));
+			//Debug.Log(string.Format("Load File Contents: {0}", path));
 			bool isRemoteHelp = isRemote;
 			#if UNITY_EDITOR
 			#elif UNITY_ANDROID
@@ -104,6 +104,7 @@ namespace Hekatombe.DataHelpers
 
 		public IEnumerator RemoteLoadingHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
+			//Debug.Log ("Path: " + path);
 			byte[] bytes = null;
 			//If a null is send on postdata, it means is a GET method
 			if (postData != null) {

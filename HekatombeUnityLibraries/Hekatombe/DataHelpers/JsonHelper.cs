@@ -6,7 +6,7 @@ namespace Hekatombe.DataHelpers
 	public static class JsonHelper {
 
 		public static T[] FromJsonToArray<T>(string json) {
-			UnityEngine.Debug.Log("JSON to ARRAY: " + json);
+			//UnityEngine.Debug.Log("JSON to ARRAY: " + json);
 			Wrapper<T> wrapper = UnityEngine.JsonUtility.FromJson<Wrapper<T>>(json);
 			return wrapper.Items;
 		}
