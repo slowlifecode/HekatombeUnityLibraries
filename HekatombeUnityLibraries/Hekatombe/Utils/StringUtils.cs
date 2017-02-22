@@ -97,5 +97,10 @@ namespace Hekatombe.Utils
 			}
 			return false;
 		}
+
+		public static string FixLineBreaks(this string value)
+		{
+			return value.Replace("\\n", "\n");
+		}
 	}
 }
