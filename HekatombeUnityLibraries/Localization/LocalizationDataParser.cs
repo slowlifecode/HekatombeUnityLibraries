@@ -34,7 +34,9 @@ namespace Hekatombe.Localization
 						//Debug.Log (string.Format("K: {0} L: {1} T: '{2}'", kvp.Key, Localization.ArLanguages[i], arLanguages[i]));
 					} else {
 						arLanguages[i] = string.Format("Key {0} not found for language {1}", kvp.Key, Localization.Languages[i].Name);
-						Debug.LogError(arLanguages[i]);
+						if (Localization.LogVerbose) {
+							Debug.LogError (arLanguages [i]);
+						}
 					}
 				}
 

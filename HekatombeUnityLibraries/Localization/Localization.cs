@@ -43,6 +43,8 @@ namespace Hekatombe.Localization
 
 		private const string kPPKeyLanguage = "SelectedLanguage";
 
+		public static bool LogVerbose = true;
+
         //To allow Force a Language for test purposes
         public static void SetForcedLanguage(ELanguage eLang)
         {
@@ -58,12 +60,16 @@ namespace Hekatombe.Localization
 		{
 			if (key == null) {
 				string strError = string.Format("LocKeyNull-{0}", language);
-				Debug.LogError(strError);
+				if (LogVerbose) {
+					Debug.LogError (strError);
+				}
 				return strError;
 			}
 			if (!Exists(key)) {
 				string strError = string.Format("LocMiss-{0}: {1}", language, key);
-				Debug.LogError(strError);
+				if (LogVerbose) {
+					Debug.LogError (strError);
+				}
 				return strError;
 			}
             return Instance.LocData[key][language.Value];
@@ -187,5 +193,7 @@ namespace Hekatombe.Localization
 				return _selectedLanguage;
 			}
 		}
+
+
 	}
 }
