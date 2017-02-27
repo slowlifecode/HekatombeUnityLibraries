@@ -4,12 +4,21 @@ using UnityEngine;
 using System.IO;
 using System;
 using UnityEngine.UI;
+using Hekatombe.Base;
 
 namespace Hekatombe.Utils
 {
 	public class TextureCacheManager : MonoBehaviour {
 
 		private static TextureCacheManager _instance;
+
+		public enum EAdaptProportion
+		{
+			No,
+			KeepHeight,
+			KeepWidth,
+			NativeSize
+		}
 
 		public static void Init()
 		{
@@ -24,17 +33,17 @@ namespace Hekatombe.Utils
 			}
 		}
 
-		public static void SetCachedTextureToRawImage(string url, RawImage refImage)
+		public static void SetCachedTextureToRawImage(string url, RawImage refImage, EAdaptProportion adaptProportion)
 		{
-			GetRemoteOrCachedTexture (url, null, refImage);
+			GetRemoteOrCachedTexture (url, null, refImage, adaptProportion);
 		}
 
-		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback)
+		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, EAdaptProportion adaptProportion)
 		{
-			GetRemoteOrCachedTexture (url, callback, null);
+			GetRemoteOrCachedTexture (url, callback, null, adaptProportion);
 		}
 
-		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, RawImage refImage)
+		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
 		{
 			string filePath = Application.persistentDataPath;
 			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(url);
@@ -66,10 +75,10 @@ namespace Hekatombe.Utils
 				web = true;
 				www = new WWW(url);
 			}
-			TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, web, callback, refImage));
+			TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, web, callback, refImage, adaptProportion));
 		}
 
-		static IEnumerator doLoad(WWW www, string filePath, bool web, Action<TextureCacheCallback> callback, RawImage refImage)
+		static IEnumerator doLoad(WWW www, string filePath, bool web, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
 		{
 			yield return www;
 			string message = "";
@@ -99,6 +108,21 @@ namespace Hekatombe.Utils
 					tex = new Texture2D(4, 4, TextureFormat.DXT1, false);
 					www.LoadImageIntoTexture(tex);
 					refImage.texture = tex;
+					RectTransform rt = refImage.rectTransform;
+					//Adapt Image Size
+					switch (adaptProportion) {
+					case EAdaptProportion.No:
+						break;
+					case EAdaptProportion.KeepHeight:
+						rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.y * tex.width) / tex.height);
+						break;
+					case EAdaptProportion.KeepWidth:
+						rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.x * tex.height) / tex.width);
+						break;
+					case EAdaptProportion.NativeSize:
+						rt.sizeDelta = new Vector2 (tex.width, tex.height);
+						break;
+					}
 				}
 			}
 			else
