@@ -100,6 +100,9 @@ namespace Hekatombe.Utils
 
 		public static string FixLineBreaks(this string value)
 		{
+			if (value == null) {
+				return null;
+			}
 			return value.Replace("\\n", "\n");
 		}
 	}
