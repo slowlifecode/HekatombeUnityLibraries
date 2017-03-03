@@ -47,6 +47,7 @@ namespace Hekatombe.DataHelpers
 	public class DataLoader : MonoBehaviour {
 
 		public static DataLoader Instance;
+		public static bool IsVerbose = false;
 
 		public static void Init()
 		{
@@ -104,7 +105,9 @@ namespace Hekatombe.DataHelpers
 
 		public IEnumerator RemoteLoadingHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
-			//Debug.Log ("Path: " + path);
+			if (IsVerbose) {
+				Debug.Log ("Path: " + path);
+			}
 			byte[] bytes = null;
 			//If a null is send on postdata, it means is a GET method
 			if (postData != null) {
