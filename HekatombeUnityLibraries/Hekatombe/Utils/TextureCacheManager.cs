@@ -107,7 +107,10 @@ namespace Hekatombe.Utils
 					Texture2D tex;
 					tex = new Texture2D(4, 4, TextureFormat.DXT1, false);
 					www.LoadImageIntoTexture(tex);
+					www.Dispose();
+					www = null;
 					refImage.texture = tex;
+					Resources.UnloadUnusedAssets ();
 					RectTransform rt = refImage.rectTransform;
 					//Adapt Image Size
 					switch (adaptProportion) {

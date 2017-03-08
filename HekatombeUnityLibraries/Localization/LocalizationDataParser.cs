@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Hekatombe.Utils;
 using UnityEngine;
 using MiniJSON;
+using Hekatombe.DataHelpers;
 
 namespace Hekatombe.Localization
 {
@@ -12,6 +13,10 @@ namespace Hekatombe.Localization
 		{
 			//Debug.Log ("JSON:\n" + json);
 			Dictionary<string, object> dict = Json.Deserialize (json) as Dictionary<string, object>;
+
+			if (JsonHelper.IsEmpty (json)) {
+				return;
+			}
 
 			foreach(var kvp in dict)
             {
