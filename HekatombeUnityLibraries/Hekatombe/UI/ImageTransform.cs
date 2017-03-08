@@ -35,26 +35,42 @@ namespace Hekatombe.Base
 		public void Hide()
 		{
 			KillTweenImage ();
-			_image.color = _originalColor.Transparent ();
+			if (_canvasGroup == null) {
+				_image.color = _originalColor.Transparent ();
+			} else {
+				_canvasGroup.alpha = 0;
+			}
 		}
 
 		public void Show()
 		{
 			KillTweenImage ();
-			_image.color = _originalColor;
+			if (_canvasGroup == null) {
+				_image.color = _originalColor;
+			} else {
+				_canvasGroup.alpha = 1;
+			}
 		}
 
 		public void HideSmooth()
 		{
 			KillTweenImage ();
-			_image.DOFade (0, 0.4f).SetEase(Ease.Linear);
+			if (_canvasGroup == null) {
+				_image.DOFade (0, 0.4f).SetEase(Ease.Linear);
+			} else {
+				_canvasGroup.DOFade (0, 0.4f).SetEase (Ease.Linear);
+			}
 		}
 
 		public void ShowSmooth()
 		{
 			KillTweenImage ();
 			Hide ();
-			_image.DOFade (1, 0.4f).SetEase(Ease.Linear);
+			if (_canvasGroup == null) {
+				_image.DOFade (1, 0.4f).SetEase (Ease.Linear);
+			} else {
+				_canvasGroup.DOFade (1, 0.4f).SetEase (Ease.Linear);
+			}
 		}
 
 		public Vector2 Size
@@ -86,6 +102,9 @@ namespace Hekatombe.Base
 		public void KillTweenImage()
 		{
 			_image.DOKill ();
+			if (_canvasGroup != null) {
+				_canvasGroup.DOKill ();
+			}
 		}
 
 		public void KillTweenTransform()
