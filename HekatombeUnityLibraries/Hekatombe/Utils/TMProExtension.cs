@@ -39,6 +39,11 @@ namespace Hekatombe.Utils
 			return string.Format ("<sprite name=\"{0}\">", idSprite);
 		}
 
+		public static string GetSpriteColorString(string idSprite, string color)
+		{
+			return string.Format ("<sprite name=\"{0}\" color=#{1}>", idSprite, color);
+		}
+
 		public static void SetFont(this TextMeshProUGUI lbl, string font)
 		{
 			if (font.IsEmpty ()) {
