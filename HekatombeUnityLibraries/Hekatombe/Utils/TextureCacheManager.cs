@@ -80,6 +80,7 @@ namespace Hekatombe.Utils
 
 		static IEnumerator doLoad(WWW www, string filePath, bool web, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
 		{
+			string url = www.url;
 			yield return www;
 			string message = "";
 
@@ -136,7 +137,7 @@ namespace Hekatombe.Utils
 				}
 				message = "WWW ERROR " + www.error;
 			}
-			Debug.Log(message);
+			Debug.Log(message + "URL: " + url + " Path: " + filePath);
 			if (callback != null) {
 				callback (new TextureCacheCallback(www, message));
 			}
