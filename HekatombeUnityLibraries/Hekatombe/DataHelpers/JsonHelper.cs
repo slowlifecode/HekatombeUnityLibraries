@@ -68,5 +68,15 @@ namespace Hekatombe.DataHelpers
 			}
 			return false;;
 		}
+
+		public static bool IntToBool(string value)
+		{
+			return value=="1"?true:false;
+		}
+
+		public static bool IntToBool(int value)
+		{
+			return value==1?true:false;
+		}
 	}
 }
