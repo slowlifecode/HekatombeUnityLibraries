@@ -22,6 +22,7 @@ namespace Hekatombe.Services
 					onDataLoadedCallback();
 				}
 			}
+			OnInitEverySceneAfterUnique ();
         }
 
 		/***
@@ -38,6 +39,11 @@ namespace Hekatombe.Services
 		protected virtual void OnInitEveryScene()
         {
             Debug.LogError ("This method should be override without calling base");
+		}
+
+		//Things like the references to the UI, that are initilized everytime a Scene is loaded, and need to be loaded after OnInitUnique
+		protected virtual void OnInitEverySceneAfterUnique()
+		{
 		}
     }
 }
