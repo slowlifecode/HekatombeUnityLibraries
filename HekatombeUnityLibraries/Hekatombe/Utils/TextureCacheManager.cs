@@ -33,6 +33,11 @@ namespace Hekatombe.Utils
 			}
 		}
 
+		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback)
+		{
+			GetRemoteOrCachedTexture (url, callback, null, EAdaptProportion.No);
+		}
+
 		public static void SetCachedTextureToRawImage(string url, RawImage refImage, EAdaptProportion adaptProportion)
 		{
 			GetRemoteOrCachedTexture (url, null, refImage, adaptProportion);
@@ -75,24 +80,24 @@ namespace Hekatombe.Utils
 				web = true;
 				www = new WWW(url);
 			}
-			TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, web, callback, refImage, adaptProportion));
+			TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, url, web, callback, refImage, adaptProportion));
 		}
 
-		static IEnumerator doLoad(WWW www, string filePath, bool web, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
+		static IEnumerator doLoad(WWW www, string filePath, string originalUrl, bool web, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
 		{
-			string url = www.url;
 			yield return www;
 			string message = "";
+			Texture2D tex = null;
 
 			if (www.error == null)
 			{
 				if (web)
 				{
 					//System.IO.Directory.GetFiles
-					Debug.Log("Saving Download Image  " + www.url + " to " + filePath);
+					Debug.Log("Saving Download Image  " + originalUrl + " to " + filePath);
 					// string fullPath = filePath;
 					File.WriteAllBytes(filePath, www.bytes);
-					message = "Saving DONE  " + www.url + " to " + filePath;
+					message = "Saving DONE  " + originalUrl + " to " + filePath;
 					//Debug.Log("FILE ATTRIBUTES  " + File.GetAttributes(filePath));
 					//if (File.Exists(fullPath))
 					// {
@@ -101,32 +106,17 @@ namespace Hekatombe.Utils
 				}
 				else
 				{
-					message = "Success Load Cached image: " + www.url;
+					message = "Success Load Cached image: " + originalUrl;
 				}
 				//Enganxa-la a la Imatge
+				tex = new Texture2D(4, 4, TextureFormat.DXT1, false);
+				www.LoadImageIntoTexture(tex);
+				www.Dispose();
+				www = null;
+				//If there is a RawImage attached, paste it automatically
+				//Warning: It's not reccomended to do it this way: Better to get the image on Callback and do with it whatever you want
 				if (refImage != null) {
-					Texture2D tex;
-					tex = new Texture2D(4, 4, TextureFormat.DXT1, false);
-					www.LoadImageIntoTexture(tex);
-					www.Dispose();
-					www = null;
-					refImage.texture = tex;
-					Resources.UnloadUnusedAssets ();
-					RectTransform rt = refImage.rectTransform;
-					//Adapt Image Size
-					switch (adaptProportion) {
-					case EAdaptProportion.No:
-						break;
-					case EAdaptProportion.KeepHeight:
-						rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.y * tex.width) / tex.height);
-						break;
-					case EAdaptProportion.KeepWidth:
-						rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.x * tex.height) / tex.width);
-						break;
-					case EAdaptProportion.NativeSize:
-						rt.sizeDelta = new Vector2 (tex.width, tex.height);
-						break;
-					}
+					AttachToRawImage(refImage, tex, adaptProportion);
 				}
 			}
 			else
@@ -135,7 +125,7 @@ namespace Hekatombe.Utils
 				{
 					File.Delete(filePath);
 				}
-				message = "WWW ERROR " + www.error + "\nURL: " + www.url;
+				message = "WWW ERROR " + www.error + "\nURL: " + originalUrl;
 			}
 			Debug.Log(message + " Path: " + filePath);
 			if (callback != null) {
@@ -145,22 +135,48 @@ namespace Hekatombe.Utils
 				{
 					strError = www.error;
 				}
-				callback (new TextureCacheCallback(strError, message, refImage));
+				callback (new TextureCacheCallback(tex, refImage, originalUrl, message, strError));
+			}
+		}
+			
+		public static void AttachToRawImage(RawImage rawImage, Texture2D tex, EAdaptProportion adaptProportion)
+		{
+			rawImage.texture = tex;
+			Resources.UnloadUnusedAssets ();
+			RectTransform rt = rawImage.rectTransform;
+			//Adapt Image Size
+			switch (adaptProportion) {
+			case EAdaptProportion.No:
+				break;
+			case EAdaptProportion.KeepHeight:
+				rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.y * tex.width) / tex.height);
+				break;
+			case EAdaptProportion.KeepWidth:
+				rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.x * tex.height) / tex.width);
+				break;
+			case EAdaptProportion.NativeSize:
+				rt.sizeDelta = new Vector2 (tex.width, tex.height);
+				break;
 			}
 		}
 	}
 
 	public class TextureCacheCallback
 	{
+		public Texture2D Texture;
+		public RawImage RawImage;
+		//URL: Useful to compare if the image it has being loaded is the same it was called, in case the user has switched to another page
+		public string Url;
 		public string Message;
 		public string Error;
-		public RawImage RawImage;
 
-		public TextureCacheCallback(string error, string message, RawImage rawImage)
+		public TextureCacheCallback(Texture2D tex, RawImage rawImage, string url, string message, string error)
 		{
-			Error = error;
-			Message = message;
+			Texture = tex;
 			RawImage = rawImage;
+			Url = url;
+			Message = message;
+			Error = error;
 		}
 
 		//Basically it's been a Success if Error is null
