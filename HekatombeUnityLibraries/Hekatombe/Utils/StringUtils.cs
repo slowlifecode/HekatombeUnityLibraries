@@ -105,5 +105,16 @@ namespace Hekatombe.Utils
 			}
 			return value.Replace("\\n", "\n");
 		}
+
+		public static string RemoveExtension(this string value)
+		{
+			int posLastDot = value.LastIndexOf('.');
+			//If there is no dot or it's too on the start return the value as it is
+			if (posLastDot <= 1)
+			{
+				return value;
+			}
+			return value.Substring(0, posLastDot);
+		}
 	}
 }

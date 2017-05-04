@@ -135,11 +135,17 @@ namespace Hekatombe.Utils
 				{
 					File.Delete(filePath);
 				}
-				message = "WWW ERROR " + www.error;
+				message = "WWW ERROR " + www.error + "\nURL: " + www.url;
 			}
-			Debug.Log(message + "URL: " + url + " Path: " + filePath);
+			Debug.Log(message + " Path: " + filePath);
 			if (callback != null) {
-				callback (new TextureCacheCallback(www, message));
+				string strError = null;
+				//Pot ser que hagi borrat l'objecte www al carregar correctament la imatge
+				if (www != null)
+				{
+					strError = www.error;
+				}
+				callback (new TextureCacheCallback(strError, message, refImage));
 			}
 		}
 	}
@@ -147,12 +153,24 @@ namespace Hekatombe.Utils
 	public class TextureCacheCallback
 	{
 		public string Message;
-		public WWW Www;
+		public string Error;
+		public RawImage RawImage;
 
-		public TextureCacheCallback(WWW www, string message)
+		public TextureCacheCallback(string error, string message, RawImage rawImage)
 		{
-			Www = www;
+			Error = error;
 			Message = message;
+			RawImage = rawImage;
+		}
+
+		//Basically it's been a Success if Error is null
+		public bool HasBeenSuccess()
+		{
+			if (Error == null)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

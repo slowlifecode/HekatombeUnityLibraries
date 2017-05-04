@@ -7,23 +7,28 @@ namespace Hekatombe.Base
 {
 	public class ImageTransform : MonoBehaviour {
 
-		private bool _isInit = false;
-		private Image _image;
-		private RectTransform _trans;
-		private Color _originalColor;
-		private CanvasGroup _canvasGroup;
+		protected bool _isInit = false;
+		protected Image _image;
+		protected RectTransform _trans;
+		protected Color _originalColor;
+		protected CanvasGroup _canvasGroup;
 
 		// Use this for initialization
 		public void Init()
 		{
-			if (!_isInit) {
-				_image = GetComponent<Image> ().BreakIfNull ();
-				_trans = GetComponent<RectTransform> ().BreakIfNull ();
-				_originalColor = _image.color;
-				_isInit = true;
-				//Don't BreakIfNull _canvasGroup, because can be unused in many cases
-				_canvasGroup = GetComponent<CanvasGroup> ();
+			if (_isInit) {
+				return;
 			}
+			//No força que trobi la Image perquè pot estar utilitzant RawImageTransform que hereda d'aquesta
+			_image = GetComponent<Image> ();
+			if (_image != null)
+			{
+				_originalColor = _image.color;
+			}
+			_trans = GetComponent<RectTransform> ().BreakIfNull ();
+			_isInit = true;
+			//Don't BreakIfNull _canvasGroup, because can be unused in many cases
+			_canvasGroup = GetComponent<CanvasGroup> ();
 		}
 
 		public ImageTransform InitReturn()
@@ -36,30 +41,45 @@ namespace Hekatombe.Base
 		{
 			KillTweenImage ();
 			if (_canvasGroup == null) {
-				_image.color = _originalColor.Transparent ();
+				SetTransparent();
 			} else {
 				_canvasGroup.alpha = 0;
 			}
+		}
+
+		protected virtual void SetTransparent()
+		{
+			_image.color = _originalColor.Transparent ();
 		}
 
 		public void Show()
 		{
 			KillTweenImage ();
 			if (_canvasGroup == null) {
-				_image.color = _originalColor;
+				SetOriginalColor();
 			} else {
 				_canvasGroup.alpha = 1;
 			}
+		}
+
+		protected virtual void SetOriginalColor()
+		{
+			_image.color = _originalColor;
 		}
 
 		public void HideSmooth()
 		{
 			KillTweenImage ();
 			if (_canvasGroup == null) {
-				_image.DOFade (0, 0.4f).SetEase(Ease.Linear);
+				SetImageDOFade(0, 0.4f);
 			} else {
 				_canvasGroup.DOFade (0, 0.4f).SetEase (Ease.Linear);
 			}
+		}
+
+		protected virtual void SetImageDOFade(float value, float time)
+		{
+			_image.DOFade (value, time).SetEase(Ease.Linear);
 		}
 
 		public void ShowSmooth()
@@ -67,7 +87,7 @@ namespace Hekatombe.Base
 			KillTweenImage ();
 			Hide ();
 			if (_canvasGroup == null) {
-				_image.DOFade (1, 0.4f).SetEase (Ease.Linear);
+				SetImageDOFade(1, 0.4f);
 			} else {
 				_canvasGroup.DOFade (1, 0.4f).SetEase (Ease.Linear);
 			}
@@ -99,7 +119,7 @@ namespace Hekatombe.Base
 			KillTweenTransform ();
 		}
 
-		public void KillTweenImage()
+		public virtual void KillTweenImage()
 		{
 			_image.DOKill ();
 			if (_canvasGroup != null) {
@@ -150,15 +170,29 @@ namespace Hekatombe.Base
 			}
 		}
 
+		public virtual float TextureRectWidth
+		{
+			get{
+				return Sprite.textureRect.width;
+			}
+		}
+
+		public virtual float TextureRectHeight
+		{
+			get{
+				return Sprite.textureRect.height;
+			}
+		}
+
 		public void ResizeProportionalButKeepHeight()
 		{
-			float perc = Sprite.textureRect.width / Sprite.textureRect.height;
+			float perc = TextureRectWidth / TextureRectHeight;
 			Size = Size.CopyVectorButModifyX (Size.y * perc);
 		}
 
 		public void ResizeProportionalButKeepWidth()
 		{
-			float perc = Sprite.textureRect.height / Sprite.textureRect.width;
+			float perc = TextureRectHeight / TextureRectWidth;
 			Size = Size.CopyVectorButModifyY (Size.x * perc);
 		}
 	}
