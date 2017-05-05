@@ -166,13 +166,16 @@ namespace Hekatombe.Utils
 		private static List<string> _images;
 		private static int _indexLoadImage;
 		private static Action _onLoadImagesEndCallback;
-		private static Action<string> _onLoadOneImageErrorCallback;
+		//Index of image, total images number
+		private static Action<int, int> _onLoadOneImageOkCallback;
+		private static Action<int, int, string> _onLoadOneImageErrorCallback;
 
-		public static void LoadImageList(List<string> images, Action onEndCallback, Action<string> onLoadOneImageErrorCallback)
+		public static void LoadImageList(List<string> images, Action onEndCallback, Action<int, int> onLoadOneImageOkCallback, Action<int, int, string> onLoadOneImageErrorCallback)
 		{
 			_images = images;
 			_indexLoadImage = 0;
 			_onLoadImagesEndCallback = onEndCallback;
+			_onLoadOneImageOkCallback = onLoadOneImageOkCallback;
 			_onLoadOneImageErrorCallback = onLoadOneImageErrorCallback;
 			LoadOneImageList(null);
 		}
@@ -182,7 +185,9 @@ namespace Hekatombe.Utils
 			//Informa del resultat de la descàrrega
 			if (tc != null && !tc.HasBeenSuccess() && _onLoadOneImageErrorCallback != null)
 			{
-				_onLoadOneImageErrorCallback(tc.Message);
+				_onLoadOneImageErrorCallback(_indexLoadImage, _images.Count, tc.Message);
+			} else if (tc != null && tc.HasBeenSuccess() && _onLoadOneImageOkCallback != null){
+				_onLoadOneImageOkCallback(_indexLoadImage, _images.Count);
 			}
 			//Si es la ultima imatge
 			if (_indexLoadImage >= _images.Count)
