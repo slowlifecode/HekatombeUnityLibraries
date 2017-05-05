@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,24 @@ namespace Hekatombe.Utils
 				return null;
 			}
 			return value.Replace("\\n", "\n");
+		}
+
+		public static bool HasExtension(this string value)
+		{
+			//If it contains a point...
+			int posLastDot = value.LastIndexOf('.');
+			if (posLastDot <= 1)
+			{
+				return false;
+			}
+			//Si te de 1 a 4 lletres
+			string[] arStr = value.Split('.');
+			int len = arStr[arStr.Length-1].Length;
+			if (len >=1 && len < 5)
+			{
+				return true;
+			}
+			return false;
 		}
 
 		public static string RemoveExtension(this string value)
