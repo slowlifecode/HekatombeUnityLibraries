@@ -159,6 +159,41 @@ namespace Hekatombe.Utils
 				break;
 			}
 		}
+
+		/*************
+		 * Load a List of Images
+		 */
+		private static List<string> _images;
+		private static int _indexLoadImage;
+		private static Action _onLoadImagesEndCallback;
+		private static Action<string> _onLoadOneImageErrorCallback;
+
+		public static void LoadImageList(List<string> images, Action onEndCallback, Action<string> onLoadOneImageErrorCallback)
+		{
+			_images = images;
+			_indexLoadImage = 0;
+			_onLoadImagesEndCallback = onEndCallback;
+			_onLoadOneImageErrorCallback = onLoadOneImageErrorCallback;
+			LoadOneImageList(null);
+		}
+
+		private static void LoadOneImageList(TextureCacheCallback tc)
+		{
+			//Informa del resultat de la descàrrega
+			if (tc != null && !tc.HasBeenSuccess() && _onLoadOneImageErrorCallback != null)
+			{
+				_onLoadOneImageErrorCallback(tc.Message);
+			}
+			//Si es la ultima imatge
+			if (_indexLoadImage >= _images.Count)
+			{
+				_onLoadImagesEndCallback();
+				return;
+			}
+			//Carrega la imatge
+			TextureCacheManager.GetRemoteOrCachedTexture(_images[_indexLoadImage], LoadOneImageList);
+			_indexLoadImage++;
+		}
 	}
 
 	public class TextureCacheCallback
