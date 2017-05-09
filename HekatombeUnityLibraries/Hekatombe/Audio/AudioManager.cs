@@ -1,86 +1,130 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Hekatombe.Base;
 
 namespace Hekatombe.Audio
 {
 	public class AudioManager : MonoBehaviour
 	{
-		public AudioClip[] audioSources;
-		public GameObject audioPrefabSource;
-		public Dictionary<string,AudioClip> audioClips;
-		static GameObject audioPrefab;
-		static GameObject instance;
-		static AudioSource musicPlayer;
-		public static AudioManager audioManager;
-		Dictionary<string,Audio> aliveSounds;
+		private static AudioManager _instance;
+		private AudioSource _sourceMusic;
+		private AudioSource _sourceSound;
 
-		void Awake ()
+		private float _volumeSound = 1.0f;
+		private float _volumeMusic = 1.0f;
+
+		public const bool IS_SOUND_ENABLED = true;
+		public const bool IS_MUSIC_ENABLED = true;
+
+		public const string kPPVolumeSound = "PPVolumeSound";
+		public const string kPPVolumeMusic = "PPVolumeMusic";
+
+		public static void Create()
 		{
-			audioManager = this;
-			audioClips = new Dictionary<string, AudioClip> ();
-			foreach (AudioClip a in audioSources) {
-				audioClips.Add (a.name, a);
+			if (_instance != null)
+			{
+				return;
 			}
-
-			instance = this.gameObject;
-			audioPrefab = audioPrefabSource;
-			musicPlayer = GetComponent<AudioSource>();
-			aliveSounds = new Dictionary<string, Audio> ();
-			//DontDestroyOnLoad(gameObject);
+			//Create GameObject AudioManager
+			GameObject go = new GameObject();
+			_instance = go.AddComponent<AudioManager>();
+			_instance.Init();
+			DontDestroyOnLoad(_instance.gameObject);
 		}
 
-		void Update ()
+		private void Init ()
 		{
-			if (!Config.hasMusic) {
-				musicPlayer.Pause ();
-			} else {
-				if (!musicPlayer.isPlaying) {
-					musicPlayer.Play ();
-				}
-			}
-			if (!Config.hasSound && aliveSounds.Count > 0) {
-				foreach (Audio a in aliveSounds.Values) {
-					a.StopSound ();
-				}
-				aliveSounds.Clear ();
-			}
+			_instance = this;
+			_volumeSound = PlayerPrefs.GetFloat(kPPVolumeSound, 1);
+			_volumeMusic = PlayerPrefs.GetFloat(kPPVolumeMusic, 1);
+			//Create MusicSource & SoundSource
+			_sourceMusic = gameObject.AddComponent<AudioSource>();
+			GameObject go = new GameObject();
+			go.name = "SoundSource";
+			go.transform.SetParent(transform);
+			_sourceSound = go.AddComponent<AudioSource>();
 		}
 
+		/******
+		 * Public members
+		 */ 
 		public static void PlayOnce (string name)
 		{
-			if (!Config.hasSound) {
-				return;
-			}
-			if (!audioManager.audioClips.ContainsKey (name)) {
-				Debug.LogError ("Audio not found in audioClips: " + name);
-				return;
-			}
-			musicPlayer.PlayOneShot (audioManager.audioClips[name]);
-			/*GameObject go = GameObject.Instantiate (audioPrefab) as GameObject;
-			go.transform.parent = instance.transform;
-			Audio a = go.GetComponent<Audio> ();
-			a.PlaySoundOnce (audioManager.audioClips [name]);*/
+			_instance.PlayOnceMe(name, 1);
 		}
 
+		public static void PlayOnce (string name, float volume)
+		{
+			_instance.PlayOnceMe(name, volume);
+		}
 
 		public static void PlayMusic (string name)
 		{
-			if (!Config.hasMusic) {
+			_instance.PlayMusicMe(name);
+		}
+
+		public static float VolumeSound
+		{
+			get {
+				return _instance._volumeSound;
+			}
+			set {
+				_instance._volumeSound = value;
+				_instance._sourceSound.volume = value;
+				PlayerPrefs.SetFloat(kPPVolumeSound, value);
+			}
+		}
+
+		public static float VolumeMusic
+		{
+			get {
+				return _instance._volumeMusic;
+			}
+			set {
+				_instance._volumeMusic = value;
+				_instance._sourceMusic.volume = value;
+				PlayerPrefs.SetFloat(kPPVolumeMusic, value);
+			}
+		}
+
+		/******
+		 * Private Members
+		 */ 
+		private void PlayOnceMe(string name, float volume)
+		{
+			if (!IS_SOUND_ENABLED || _volumeSound <= 0 || volume <= 0) {
+				return;
+			}
+			AudioClip clip = Resources.Load<AudioClip>("Audio/Sound/"+name);
+			if (clip == null) {
+				Debug.LogError ("Audio not found in audioClips on PlayOnce: " + name);
+				return;
+			}
+			_sourceSound.PlayOneShot (clip, volume * _volumeSound);
+		}
+
+
+		private void PlayMusicMe (string name)
+		{
+			if (!IS_MUSIC_ENABLED) {
+				return;
+			}
+			AudioClip clip = Resources.Load<AudioClip>("Audio/Music/"+name);
+			if (clip == null) {
+				Debug.LogError ("Audio not found in audioClips on PlayMusic: " + name);
 				return;
 			}
 
-			if (musicPlayer.clip == null || musicPlayer.clip.name != name) {
-				//      musicPlayer.clip = audioManager.audioClips [name];
-				musicPlayer.clip = Resources.Load ("Audio/" + name, typeof(AudioClip)) as AudioClip;
-				musicPlayer.Stop ();
-				musicPlayer.loop = true;
-				musicPlayer.Play ();
-			} else {
-				musicPlayer.loop = true;
-				musicPlayer.Play ();
+			//Comprova que no s'estigui executant ja aquesta musica
+			if (_sourceMusic.clip != null && _sourceMusic.clip.name == name) {
+				return;
 			}
-
+			_sourceMusic.clip = clip;
+			_sourceMusic.Stop ();
+			_sourceMusic.loop = true;
+			_sourceMusic.Play ();
+			_sourceMusic.volume = _volumeMusic;
 		}
 	}
 }
