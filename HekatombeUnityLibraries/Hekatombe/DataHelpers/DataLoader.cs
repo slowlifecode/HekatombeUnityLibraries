@@ -66,7 +66,10 @@ namespace Hekatombe.DataHelpers
 
 		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd)
 		{
-			//Debug.Log(string.Format("Load File Contents: {0}", path));
+			if (IsVerbose)
+			{
+				Debug.Log(string.Format("Load File Contents: {0}", path));
+			}
 			bool isRemoteHelp = isRemote;
 			#if UNITY_EDITOR
 			#elif UNITY_ANDROID
