@@ -99,9 +99,16 @@ namespace Hekatombe.Localization
 				{
                     Debug.LogWarning("Tha Language is Forced by Config: " + _forcedLanguage + ". Set Language: " + PlayerPrefs.GetString(kPPKeyLanguage));
                     SetLanguage(_forcedLanguage);
-				} else if (IsLanguageSetByUser())
+				} 
+				else if (IsLanguageSetByUser())
 				{
-					SetLanguage(GetLanguageByName(PlayerPrefs.GetString(kPPKeyLanguage)));
+					ELanguage lang = GetLanguageByName(PlayerPrefs.GetString(kPPKeyLanguage));
+					//for safety: In case it's saved with a language that doesn't exist anymore
+					if (lang == null)
+					{
+						lang = languages[0];
+					}
+					SetLanguage(lang);
 				} else {
 					SetLanguage(_defaultLanguage);
 				}
