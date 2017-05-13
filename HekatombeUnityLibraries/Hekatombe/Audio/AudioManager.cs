@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Hekatombe.Base;
+using Hekatombe.Utils;
 
 namespace Hekatombe.Audio
 {
@@ -93,7 +94,7 @@ namespace Hekatombe.Audio
 		 */ 
 		private void PlayOnceMe(string name, float volume)
 		{
-			if (!IS_SOUND_ENABLED || _volumeSound <= 0 || volume <= 0) {
+			if (!IS_SOUND_ENABLED || name.IsEmpty() || _volumeSound <= 0 || volume <= 0) {
 				return;
 			}
 			AudioClip clip = Resources.Load<AudioClip>("Audio/Sound/"+name);
@@ -107,7 +108,7 @@ namespace Hekatombe.Audio
 
 		private void PlayMusicMe (string name)
 		{
-			if (!IS_MUSIC_ENABLED) {
+			if (!IS_MUSIC_ENABLED || name.IsEmpty()) {
 				return;
 			}
 			AudioClip clip = Resources.Load<AudioClip>("Audio/Music/"+name);
