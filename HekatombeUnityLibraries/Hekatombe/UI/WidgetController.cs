@@ -67,7 +67,7 @@ namespace Hekatombe.UI
 			}
 		}
 
-		private void ToggleBasic(bool flag)
+		protected void ToggleBasic(bool flag)
 		{
 			IsShown = flag;
 			_canvasGroup.alpha = flag?1.0f:0.0f;
