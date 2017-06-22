@@ -66,6 +66,11 @@ namespace Hekatombe.DataHelpers
 
 		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd)
 		{
+			LoadData(isRemote, path, onCallbackEnd, true);
+		}
+
+		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd, bool isOnStreamingAssets)
+		{
 			if (IsVerbose)
 			{
 				Debug.Log(string.Format("Load File Contents: {0}", path));
@@ -73,8 +78,8 @@ namespace Hekatombe.DataHelpers
 			bool isRemoteHelp = isRemote;
 			#if UNITY_EDITOR
 			#elif UNITY_ANDROID
-			//In Android even the Local Files have to be loaded as Remote
-			if (!isRemoteHelp)
+			//In Android even the Local Files that ARE on StreamingAssets have to be loaded as Remote (But not the ones that are on Application.persistentDataPath)
+			if (!isRemoteHelp && isOnStreamingAssets)
 			{
 				isRemoteHelp = true;
 			}
