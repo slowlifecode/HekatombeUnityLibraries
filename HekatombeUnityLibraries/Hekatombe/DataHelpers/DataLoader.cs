@@ -136,11 +136,14 @@ namespace Hekatombe.DataHelpers
 
 		public void LocalLoading(string path, Action<LoadDataResult> onCallbackEnd)
 		{
-			if (!File.Exists (path)) {
+			if (!DataSaver.Exists (path)) {
 				string error = "Local Loading Error: " + path + " not found!";
 				onCallbackEnd (new LoadDataResult (false, error));
 			} else {
-				onCallbackEnd (new LoadDataResult (true, File.ReadAllText (path)));
+				StreamReader r = File.OpenText(path);
+				string data = r.ReadToEnd();
+				r.Close();
+				onCallbackEnd (new LoadDataResult (true, data));
 			}
 		}
 	}
