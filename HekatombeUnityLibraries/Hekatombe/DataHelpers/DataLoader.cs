@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Hekatombe.Base;
 using System.Collections.Generic;
+using Hekatombe.Utils;
 
 namespace Hekatombe.DataHelpers
 {
@@ -129,8 +130,14 @@ namespace Hekatombe.DataHelpers
 			}
 			else
 			{
-				Debug.LogError("Remote Loading Error: " + www.error);
-				onCallbackEnd (new LoadDataResult(false, www.error));
+				//Mira si és un json i té algun missatge
+				JSONObject j = new JSONObject(www.text);
+				string strError = www.error;
+				if (j.HasField("message")){
+					strError = WWW.UnEscapeURL(j.GetField("message").str).FixLineBreaks();
+				}
+				Debug.LogError("Remote Loading Error: " +strError+ " Error:" + www.error + " Text: " + www.text);
+				onCallbackEnd (new LoadDataResult(false, strError));
 			}
 		}
 
