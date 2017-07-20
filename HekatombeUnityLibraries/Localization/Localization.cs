@@ -201,6 +201,9 @@ namespace Hekatombe.Localization
 			}
 		}
 
-
+		public static bool IsInit()
+		{
+			return Instance != null;
+		}
 	}
 }

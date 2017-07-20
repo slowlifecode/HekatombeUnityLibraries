@@ -20,8 +20,13 @@ namespace Hekatombe.Utils
 
         static public DateTime GetTime(double timestamp)
         {
-            return Epoch.AddSeconds(timestamp).ToLocalTime();
-        }
+			return GetTimeUtc(timestamp).ToLocalTime();
+		}
+
+		static public DateTime GetTimeUtc(double timestamp)
+		{
+			return Epoch.AddSeconds(timestamp);
+		}
         
         static public long TimeStamp
         {
