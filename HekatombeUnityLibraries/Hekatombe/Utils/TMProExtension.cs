@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using TMPro;
 using DG.Tweening;
+using Hekatombe.Base;
 
 namespace Hekatombe.Utils
 {
@@ -57,6 +58,11 @@ namespace Hekatombe.Utils
 			} else {
 				Debug.LogError ("Font not found in: " + path);
 			}
+		}
+
+		public static void SetHexColor(this TextMeshProUGUI lbl, string hexColor)
+		{
+			lbl.color = ColorExtension.HexToColor(hexColor);
 		}
 	}
 }
