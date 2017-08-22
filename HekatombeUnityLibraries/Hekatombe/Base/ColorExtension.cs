@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace Hekatombe.Base
 {
@@ -48,6 +49,11 @@ namespace Hekatombe.Base
                 //pink Color
                 return new Color32(255,0,255,255);
             }
-        }
+		}
+
+		public static void ImageSetHexColor(this Image img, string hexColor)
+		{
+			img.color = ColorExtension.HexToColor(hexColor);
+		}
     }
 }

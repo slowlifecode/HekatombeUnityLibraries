@@ -47,7 +47,7 @@ namespace Hekatombe.Utils
 		public static void SetFont(this TextMeshProUGUI lbl, string font)
 		{
 			if (font.IsEmpty ()) {
-				Debug.LogWarning ("Not found specified");
+				Debug.LogWarning ("No font specified");
 				return;
 			}
 			string path = TMP_Settings.defaultFontAssetPath + font;
