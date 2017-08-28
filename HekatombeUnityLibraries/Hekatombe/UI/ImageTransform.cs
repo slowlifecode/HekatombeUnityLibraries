@@ -173,14 +173,14 @@ namespace Hekatombe.Base
 		public virtual float TextureRectWidth
 		{
 			get{
-				return Sprite.textureRect.width;
+				return Sprite.rect.width;
 			}
 		}
 
 		public virtual float TextureRectHeight
 		{
 			get{
-				return Sprite.textureRect.height;
+				return Sprite.rect.height;
 			}
 		}
 
@@ -194,6 +194,18 @@ namespace Hekatombe.Base
 		{
 			float perc = TextureRectHeight / TextureRectWidth;
 			Size = Size.CopyVectorButModifyY (Size.x * perc);
+		}
+
+		public void ResizeProportionalButKeepBiggest()
+		{
+			if (TextureRectWidth > TextureRectHeight)
+			{
+				ResizeProportionalButKeepWidth();
+			} else if (TextureRectWidth < TextureRectHeight){
+				ResizeProportionalButKeepHeight();
+			} else {
+				//Do nothing
+			}
 		}
 	}
 }
