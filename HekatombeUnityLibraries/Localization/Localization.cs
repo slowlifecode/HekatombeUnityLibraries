@@ -31,7 +31,7 @@ namespace Hekatombe.Localization
 	public partial class Localization {
         private static ELanguage _forcedLanguage;
 
-		public Dictionary<string, string[]> LocData = new Dictionary<string, string[]>();
+		public Dictionary<string, Dictionary<int, string>> LocData = new Dictionary<string, Dictionary<int, string>>();
 
 		public static ELanguage[] Languages;
 		
@@ -72,7 +72,7 @@ namespace Hekatombe.Localization
 				}
 				return strError;
 			}
-            return Instance.LocData[key][language.Value];
+			return Instance.LocData[key][language.Value];
 		}
 
 		public static bool Exists(string key)
@@ -116,7 +116,7 @@ namespace Hekatombe.Localization
 		}
 
         //To Hardcode text data (Not recommended but...)
-		public static void SetDataHardCoded(Dictionary<string, string[]> locData)
+		public static void SetDataHardCoded(Dictionary<string, Dictionary<int, string>> locData)
 		{
 			Instance.LocData = locData;
 		}
@@ -155,11 +155,13 @@ namespace Hekatombe.Localization
 
 		private void AddLoc(string id, string es, string ca, string en)
 		{
-			LocData.Add(id, new string[]{
-				es,
-				ca,
-				en
-			});
+			Dictionary<int, string> dict = new Dictionary<int, string>();
+			//Poso directament els integers perquè assumeixo que 0->spanish, 1->catala, 2->english
+			//Però això es confiar molt i és una guarrada...
+			dict.Add(0, es);
+			dict.Add(1, ca);
+			dict.Add(2, en);
+			LocData.Add(id, dict);
 		}
 		
 		private void Load(string localizationJsonStr)
