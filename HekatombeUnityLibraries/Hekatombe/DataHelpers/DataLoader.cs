@@ -12,6 +12,7 @@ namespace Hekatombe.DataHelpers
 		public bool IsSuccess = false;
 		public string Contents;
 		public string Error = "Not loaded yet";
+		public string ErrorMessage = "";
 
 		private const string k401 = "401";
 		private const string k403 = "403";
@@ -33,9 +34,10 @@ namespace Hekatombe.DataHelpers
 			Error = error;
 		}
 
+		//Pot ser "unauthorized" o "401 UNAUTHORIZED\r"
 		public bool IsUnauthorized()
 		{
-			return Contents.Contains (k401) || Error.Contains (k401) || Contents.Contains (k403) || Error.Contains (k403);
+			return Error.ToLower().Contains("unauthorized");
 		}
 
 		public bool IsNotFound()
@@ -109,7 +111,7 @@ namespace Hekatombe.DataHelpers
 		public IEnumerator RemoteLoadingHeaders(string path, Action<LoadDataResult> onCallbackEnd, string postData, Dictionary<string, string> postHeaders)
 		{
 			if (IsVerbose) {
-				Debug.Log ("Path: " + path);
+				Debug.Log ("Path: " + path + " POST: " + postData);
 			}
 			byte[] bytes = null;
 			//If a null is send on postdata, it means is a GET method
@@ -118,7 +120,7 @@ namespace Hekatombe.DataHelpers
 			}
 			WWW www = new WWW(path, bytes, postHeaders);
 			yield return www;
-			if (www.error == null)
+			if (string.IsNullOrEmpty(www.error))
 			{
 				onCallbackEnd (new LoadDataResult(true, www.text));
 			}
