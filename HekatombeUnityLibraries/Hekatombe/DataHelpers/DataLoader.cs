@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Hekatombe.Base;
 using System.Collections.Generic;
+using Hekatombe.Utils;
 
 namespace Hekatombe.DataHelpers
 {
@@ -68,6 +69,11 @@ namespace Hekatombe.DataHelpers
 
 		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd)
 		{
+			LoadData(isRemote, path, onCallbackEnd, true);
+		}
+
+		public static void LoadData(bool isRemote, string path, Action<LoadDataResult> onCallbackEnd, bool isOnStreamingAssets)
+		{
 			if (IsVerbose)
 			{
 				Debug.Log(string.Format("Load File Contents: {0}", path));
@@ -75,8 +81,8 @@ namespace Hekatombe.DataHelpers
 			bool isRemoteHelp = isRemote;
 			#if UNITY_EDITOR
 			#elif UNITY_ANDROID
-			//In Android even the Local Files have to be loaded as Remote
-			if (!isRemoteHelp)
+			//In Android even the Local Files that ARE on StreamingAssets have to be loaded as Remote (But not the ones that are on Application.persistentDataPath)
+			if (!isRemoteHelp && isOnStreamingAssets)
 			{
 				isRemoteHelp = true;
 			}
@@ -126,18 +132,27 @@ namespace Hekatombe.DataHelpers
 			}
 			else
 			{
-				Debug.LogError("Remote Loading Error: " + www.error);
-				onCallbackEnd (new LoadDataResult(false, www.error));
+				//Mira si és un json i té algun missatge
+				JSONObject j = new JSONObject(www.text);
+				string strError = www.error;
+				if (j.HasField("message")){
+					strError = WWW.UnEscapeURL(j.GetField("message").str).FixLineBreaks();
+				}
+				Debug.LogError("Remote Loading Error: " +strError+ " Error:" + www.error + " Text: " + www.text);
+				onCallbackEnd (new LoadDataResult(false, strError));
 			}
 		}
 
 		public void LocalLoading(string path, Action<LoadDataResult> onCallbackEnd)
 		{
-			if (!File.Exists (path)) {
+			if (!DataSaver.Exists (path)) {
 				string error = "Local Loading Error: " + path + " not found!";
 				onCallbackEnd (new LoadDataResult (false, error));
 			} else {
-				onCallbackEnd (new LoadDataResult (true, File.ReadAllText (path)));
+				StreamReader r = File.OpenText(path);
+				string data = r.ReadToEnd();
+				r.Close();
+				onCallbackEnd (new LoadDataResult (true, data));
 			}
 		}
 	}

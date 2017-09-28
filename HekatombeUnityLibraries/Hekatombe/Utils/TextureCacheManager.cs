@@ -152,7 +152,7 @@ namespace Hekatombe.Utils
 				rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.y * tex.width) / tex.height);
 				break;
 			case EAdaptProportion.KeepWidth:
-				rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyX ((rt.sizeDelta.x * tex.height) / tex.width);
+				rt.sizeDelta = rt.sizeDelta.CopyVectorButModifyY ((rt.sizeDelta.x * tex.height) / tex.width);
 				break;
 			case EAdaptProportion.NativeSize:
 				rt.sizeDelta = new Vector2 (tex.width, tex.height);

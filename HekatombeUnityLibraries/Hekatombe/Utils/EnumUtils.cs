@@ -4,7 +4,7 @@ namespace Hekatombe.Utils
 {
     public class EnumUtils
 	{
-		public static T ParseEnum<T>( string value )
+		public static T Parse<T>( string value )
 		{
 			return (T) Enum.Parse( typeof( T ), value, true );
 		}
@@ -14,15 +14,14 @@ namespace Hekatombe.Utils
 			return Enum.IsDefined(typeof( T ), value);
 		}
 
-		//Warning, that will break in case the parameter is void, but also if there is some weird character, K-Boom!
-		public static T ParseEnum<T>(string value, T defaultValue) 
+		public static T ParseDefault<T>(string value, T defaultValue) 
 		{
-			if (string.IsNullOrEmpty(value))
+			if (string.IsNullOrEmpty(value) || ! IsDefined<T>(value))
 			{
 				return defaultValue;
 			}
 			
-			return ParseEnum<T>(value);
+			return Parse<T>(value);
 		}
     }
 }
