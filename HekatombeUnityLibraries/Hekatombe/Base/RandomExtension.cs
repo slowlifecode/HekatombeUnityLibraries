@@ -32,6 +32,11 @@ namespace Hekatombe.Base
 
 		public static int RangeButDifferentThan(int min, int max, int different)
 		{
+			//If it's the same value
+			if (min >= max)
+			{
+				return min;
+			}
 			int rand = Random.Range (min, max);
 			//If it's the same value, get the next
 			if (rand == different) {
