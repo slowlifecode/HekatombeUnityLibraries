@@ -41,7 +41,7 @@ namespace Hekatombe.Localization
 					if (languagesDic.ContainsKey(Localization.Languages[i].Name))
 					{
 						strText = languagesDic[Localization.Languages[i].Name].ToString();
-						//Debug.Log (string.Format("K: {0} L: {1} T: '{2}'", kvp.Key, Localization.ArLanguages[i], arLanguages[Localization.Languages[i]]));
+						//Debug.Log (string.Format("K: {0} L: {1} T: '{2}'", kvp.Key, Localization.Languages[i].Name, strText));
 					} else {
 						strText = string.Format("Miss-Lang-{0}:{1}",Localization.Languages[i].Name, kvp.Key);
 						if (Localization.LogVerbose) {
