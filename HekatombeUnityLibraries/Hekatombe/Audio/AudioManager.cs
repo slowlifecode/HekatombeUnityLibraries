@@ -123,9 +123,9 @@ namespace Hekatombe.Audio
 
         private void PlayMusicMe(string fileName)
         {
-            Debug.Log("Music Play: " + name + " Previous: " + _musicFileName);
+            Debug.Log("Music Play: " + fileName + " Previous: " + _musicFileName);
             //Don't play it if doesn't exist or is the same thn the previous one
-            if (!IS_MUSIC_ENABLED || name.IsEmpty() || _musicFileName == fileName)
+            if (!IS_MUSIC_ENABLED || fileName.IsEmpty() || _musicFileName == fileName)
             {
                 return;
             }
@@ -142,9 +142,9 @@ namespace Hekatombe.Audio
 
         private void PlayMusicStreamingAssetsMe(string fileName)
         {
-            Debug.Log("Music Streaming Play: " + name + " Previous: " + _musicFileName);
+            Debug.Log("Music Streaming Play: " + fileName + " Previous: " + _musicFileName);
             //Don't play it if doesn't exist or is the same thn the previous one
-            if (!IS_MUSIC_ENABLED || name.IsEmpty() || _musicFileName == fileName)
+            if (!IS_MUSIC_ENABLED || fileName.IsEmpty() || _musicFileName == fileName)
             {
                 return;
             }
@@ -168,7 +168,7 @@ namespace Hekatombe.Audio
                 else
                 {
                     AudioClip myClip = DownloadHandlerAudioClip.GetContent(_wwwMusic);
-                    Debug.Log("Music Streaming Loaded: " + myClip.name);
+                    Debug.Log("Music Streaming Loaded: " + path);
                     PlayMusicMeAction(myClip);
                 }
             }
@@ -176,11 +176,12 @@ namespace Hekatombe.Audio
 
         private void PlayMusicMeAction(AudioClip clip)
         {
-            _sourceMusic.clip = clip;
             _sourceMusic.Stop();
+            _sourceMusic.clip = clip;
             _sourceMusic.loop = true;
             _sourceMusic.Play();
             _sourceMusic.volume = _volumeMusic;
+            Debug.Log("Music Streaming Play: " + _sourceMusic.clip.ToString() + " Length: " + _sourceMusic.clip.length);
         }
 	}
 }
