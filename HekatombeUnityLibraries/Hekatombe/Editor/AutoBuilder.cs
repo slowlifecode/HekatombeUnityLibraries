@@ -85,29 +85,13 @@ namespace Hekatombe.Base
         }
 
         [MenuItem("File/AutoBuilder/Android")]
-        static void PerformAndroidBuild ()
+        static void PerformAndroidBuild()
         {
             SetDefines(BuildTargetGroup.Android);
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.Android);
             EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ETC;
             EditorPrefs.SetString("AndroidSdkRoot", System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + "/Development/android-sdk/");
-            BuildPipeline.BuildPlayer(ScenePaths, "Builds/Android/" + ProjectName + ".apk",BuildTarget.Android,BuildOptions.None);
-        }
-
-        [MenuItem("File/AutoBuilder/Web/Standard")]
-        static void PerformWebBuild ()
-        {
-            SetDefines(BuildTargetGroup.WebPlayer);
-            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.WebPlayer);
-            BuildPipeline.BuildPlayer(ScenePaths, "Builds/Web",BuildTarget.WebPlayer,BuildOptions.None);
-        }
-
-        [MenuItem("File/AutoBuilder/Web/Streamed")]
-        static void PerformWebStreamedBuild ()
-        {
-            SetDefines(BuildTargetGroup.WebPlayer);
-            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.WebPlayerStreamed);
-            BuildPipeline.BuildPlayer(ScenePaths, "Builds/Web-Streamed",BuildTarget.WebPlayerStreamed,BuildOptions.None);
+            BuildPipeline.BuildPlayer(ScenePaths, "Builds/Android/" + ProjectName + ".apk", BuildTarget.Android, BuildOptions.None);
         }
     }
 }
