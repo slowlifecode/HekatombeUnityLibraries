@@ -74,6 +74,11 @@ namespace Hekatombe.Audio
             _instance.PlayMusicStreamingAssetsMe(name);
         }
 
+        public static void PlayMusicAudioClip(AudioClip clip)
+        {
+            _instance.PlayMusicAudioClipMe(clip);
+        }
+
         public static float VolumeSound
         {
             get
@@ -139,7 +144,6 @@ namespace Hekatombe.Audio
             PlayMusicMeAction(clip);
         }
 
-
         private void PlayMusicStreamingAssetsMe(string fileName)
         {
             Debug.Log("Music Streaming Play: " + fileName + " Previous: " + _musicFileName);
@@ -151,6 +155,18 @@ namespace Hekatombe.Audio
             _musicFileName = fileName;
             _sourceMusic.Stop();
             StartCoroutine(GetWwwAudioClip(fileName));
+        }
+
+        private void PlayMusicAudioClipMe(AudioClip clip)
+        {
+            Debug.Log("Music PlayMusicAudioClip: " + clip.name + " Previous: " + _musicFileName);
+            //Don't play it if doesn't exist or is the same thn the previous one
+            if (!IS_MUSIC_ENABLED || _musicFileName == clip.name)
+            {
+                return;
+            }
+            _musicFileName = clip.name;
+            PlayMusicMeAction(clip);
         }
 
         IEnumerator GetWwwAudioClip(string fileName)
@@ -181,7 +197,7 @@ namespace Hekatombe.Audio
             _sourceMusic.loop = true;
             _sourceMusic.Play();
             _sourceMusic.volume = _volumeMusic;
-            Debug.Log("Music Streaming Play: " + _sourceMusic.clip.ToString() + " Length: " + _sourceMusic.clip.length);
+            Debug.Log("PlayMusicMeAction: " + clip.ToString() + " Length: " + clip.length);
         }
 	}
 }
