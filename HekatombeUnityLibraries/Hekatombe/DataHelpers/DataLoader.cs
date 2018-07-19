@@ -104,7 +104,7 @@ namespace Hekatombe.DataHelpers
 			}
 			else
 			{
-				Debug.LogError("Remote Loading Error: " + www.error);
+                Debug.LogError("Remote Loading Error: " + www.error + " Path: " + path);
 				onCallbackEnd (new LoadDataResult(false, www.error));
 			}
 		}
