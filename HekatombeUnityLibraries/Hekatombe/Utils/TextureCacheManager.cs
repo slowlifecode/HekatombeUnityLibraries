@@ -5,59 +5,66 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using Hekatombe.Base;
+using UnityEngine.Networking;
 
 namespace Hekatombe.Utils
 {
-	public class TextureCacheManager : MonoBehaviour {
+    public class TextureCacheManager : MonoBehaviour
+    {
 
-		private static TextureCacheManager _instance;
+        private static TextureCacheManager _instance;
 
-		public enum EAdaptProportion
-		{
-			No,
-			KeepHeight,
-			KeepWidth,
-			NativeSize
-		}
+        public enum EAdaptProportion
+        {
+            No,
+            KeepHeight,
+            KeepWidth,
+            NativeSize
+        }
 
-		public static void Init()
-		{
-			if (_instance == null)
-			{
-				GameObject go = new GameObject ();
-				go.name = "TextureCacheManager";
-				_instance = go.AddComponent<TextureCacheManager> ();
-				DontDestroyOnLoad (_instance.gameObject);
-			} else {
-				Debug.LogWarning ("Trying to create another TextureCacheManager object, just one is enough :)");
-			}
-		}
+        public static void Init()
+        {
+            if (_instance == null)
+            {
+                GameObject go = new GameObject();
+                go.name = "TextureCacheManager";
+                _instance = go.AddComponent<TextureCacheManager>();
+                DontDestroyOnLoad(_instance.gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("Trying to create another TextureCacheManager object, just one is enough :)");
+            }
+        }
 
-		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback)
-		{
-			GetRemoteOrCachedTexture (url, callback, null, EAdaptProportion.No);
-		}
+        public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback)
+        {
+            GetRemoteOrCachedTexture(url, callback, null, EAdaptProportion.No);
+        }
 
-		public static void SetCachedTextureToRawImage(string url, RawImage refImage, EAdaptProportion adaptProportion)
-		{
-			GetRemoteOrCachedTexture (url, null, refImage, adaptProportion);
-		}
+        public static void SetCachedTextureToRawImage(string url, RawImage refImage, EAdaptProportion adaptProportion)
+        {
+            GetRemoteOrCachedTexture(url, null, refImage, adaptProportion);
+        }
 
-		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, EAdaptProportion adaptProportion)
-		{
-			GetRemoteOrCachedTexture (url, callback, null, adaptProportion);
-		}
+        public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, EAdaptProportion adaptProportion)
+        {
+            GetRemoteOrCachedTexture(url, callback, null, adaptProportion);
+        }
 
-		public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
-		{
-			string filePath = Application.persistentDataPath;
-			var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(url);
-			filePath += "/" + System.Convert.ToBase64String(plainTextBytes);
-			//string loadFilepath = filePath;
-			bool web = false;
-			WWW www;
-			bool useCached = false;
-			useCached = System.IO.File.Exists(filePath);
+        public static void GetRemoteOrCachedTexture(string url, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
+        {
+//#if UNITY_WEBGL
+//            TextureCacheManager._instance.StartCoroutine(doLoadWebGL(url, callback, refImage, adaptProportion));
+//#else
+            string filePath = Application.persistentDataPath;
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(url);
+            filePath += "/" + System.Convert.ToBase64String(plainTextBytes);
+            //string loadFilepath = filePath;
+            bool web = false;
+            WWW www;
+            bool useCached = false;
+            useCached = System.IO.File.Exists(filePath);
 			if (useCached)
 			{
 				//check how old
@@ -80,8 +87,39 @@ namespace Hekatombe.Utils
 				web = true;
 				www = new WWW(url);
 			}
-			TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, url, web, callback, refImage, adaptProportion));
+            TextureCacheManager._instance.StartCoroutine(doLoad(www, filePath, url, web, callback, refImage, adaptProportion));
+//#endif
 		}
+
+
+        static IEnumerator doLoadWebGL(string url, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
+        {
+            Texture2D tex = null;
+            string message = "";
+            string strError = null;
+
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(url))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                    strError = uwr.error;
+                    Debug.LogError(strError);
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    tex = DownloadHandlerTexture.GetContent(uwr);
+                    message = "Texture Download Ok";
+                }
+                Debug.Log("Download Image: " + url + " Message: " + message + " Error: " + strError + " Texture: " + tex.name);
+                if (callback != null)
+                {
+                    callback(new TextureCacheCallback(tex, refImage, url, message, strError));
+                }
+            }
+        }
 
 		static IEnumerator doLoad(WWW www, string filePath, string originalUrl, bool web, Action<TextureCacheCallback> callback, RawImage refImage, EAdaptProportion adaptProportion)
 		{
