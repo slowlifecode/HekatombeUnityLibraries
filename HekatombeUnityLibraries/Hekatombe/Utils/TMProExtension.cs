@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using System.Collections;
 using TMPro;
 using DG.Tweening;
 using Hekatombe.Base;

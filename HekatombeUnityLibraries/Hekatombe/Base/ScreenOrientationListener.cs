@@ -6,7 +6,7 @@ namespace Hekatombe.Base
     public class ScreenOrientationListener 
     {
 		private EventDispatcher _eventDispatcher;
-		private ScreenOrientation _screenOrientation = ScreenOrientation.Unknown;
+        private ScreenOrientation _screenOrientation = ScreenOrientation.AutoRotation;
 		private EventChangeScreenOrientationYield _eventYield;
 		//Sometimes with one frame the UI is not fully reestructured, so wait for several frames to send the EventYield
 		private int _numFramesEventYield;
